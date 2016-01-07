@@ -54,7 +54,7 @@
      public double func_145835_a(double p_145835_1_, double p_145835_3_, double p_145835_5_)
      {
          double d0 = (double)this.field_174879_c.func_177958_n() + 0.5D - p_145835_1_;
-@@ -279,4 +291,146 @@
+@@ -279,4 +291,156 @@
          func_145826_a(TileEntityFlowerPot.class, "FlowerPot");
          func_145826_a(TileEntityBanner.class, "Banner");
      }
@@ -199,5 +199,15 @@
 +    public void onLoad()
 +    {
 +        // NOOP
++    }
++
++    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
++    {
++        return getCapability(capability, facing) != null;
++    }
++
++    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing)
++    {
++        return null;
 +    }
  }

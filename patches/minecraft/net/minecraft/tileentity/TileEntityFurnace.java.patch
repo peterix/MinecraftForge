@@ -49,3 +49,72 @@
          }
      }
  
+@@ -451,4 +462,68 @@
+             this.field_145957_n[i] = null;
+         }
+     }
++
++
++    @net.minecraftforge.common.capabilities.CapabilityInject(IInventory.class)
++    private static final net.minecraftforge.common.capabilities.Capability<IInventory> INV_CAP = null;
++    private IInventory TOP, BOTTOM, SIDES;
++
++    public TileEntityFurnace()
++    {
++        if (INV_CAP != null)
++        {
++            TOP    = new SubInventory(this, 0, 1);
++            BOTTOM = new SubInventory(this, 1, 1);
++            SIDES  = new SubInventory(this, 2, 1);
++        }
++    }
++    @SuppressWarnings("unchecked") // Is there a way we can fix this 'unchecked'?
++    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing)
++    {
++        if (capability == INV_CAP)
++        {
++            if (facing == null) return (T)this; //null == UNKNOWN == SELF
++            if (facing == net.minecraft.util.EnumFacing.UP)   return (T)TOP;
++            if (facing == net.minecraft.util.EnumFacing.DOWN) return (T)BOTTOM;
++            return (T)SIDES;
++        }
++        return null;
++    }
++
++    private static class SubInventory implements IInventory
++    {
++        private int start, length;
++        private IInventory parent;
++        public SubInventory(IInventory parent, int start, int length)
++        {
++            this.parent = parent;
++            this.start = start;
++            this.length = length;
++        }
++        @Override public String func_70005_c_() { return this.parent.func_70005_c_(); }
++        @Override public boolean func_145818_k_() { return this.parent.func_145818_k_(); }
++        @Override public net.minecraft.util.IChatComponent func_145748_c_() { return this.parent.func_145748_c_(); }
++        @Override public int func_70302_i_() { return length; }
++        @Override public ItemStack func_70301_a(int index) { return this.parent.func_70301_a(start + index); }
++        @Override public ItemStack func_70298_a(int index, int count) { return this.parent.func_70298_a(start + index, count); }
++        @Override public ItemStack func_70304_b(int index) { return this.parent.func_70304_b(start + index); }
++        @Override public void func_70299_a(int index, ItemStack stack) { this.parent.func_70299_a(start + index, stack); }
++        @Override public int func_70297_j_() { return this.parent.func_70297_j_(); }
++        @Override public void func_70296_d() { this.parent.func_70296_d(); }
++        @Override public boolean func_70300_a(EntityPlayer player) { return this.parent.func_70300_a(player); }
++        @Override public void func_174889_b(EntityPlayer player) { this.parent.func_174889_b(player); }
++        @Override public void func_174886_c(EntityPlayer player) { this.parent.func_174886_c(player); }
++        @Override public boolean func_94041_b(int index, ItemStack stack) { return this.parent.func_94041_b(start + index, stack); }
++        @Override public int func_174887_a_(int id) { return this.parent.func_174887_a_(id); }
++        @Override public void func_174885_b(int id, int value) { this.parent.func_174885_b(id, value); }
++        @Override public int func_174890_g() { return this.parent.func_174890_g(); }
++        @Override
++        public void func_174888_l()
++        {
++            for (int x = start; x < start + length; x++)
++            {
++                this.parent.func_70299_a(x, null);
++            }
++        }
++    }
+ }
