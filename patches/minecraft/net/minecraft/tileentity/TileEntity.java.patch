@@ -1,5 +1,14 @@
 --- ../src-base/minecraft/net/minecraft/tileentity/TileEntity.java
 +++ ../src-work/minecraft/net/minecraft/tileentity/TileEntity.java
+@@ -17,7 +17,7 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+-public abstract class TileEntity
++public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilityProvider, net.minecraftforge.common.util.INBTSerializable<NBTTagCompound>
+ {
+     private static final Logger field_145852_a = LogManager.getLogger();
+     private static Map < String, Class <? extends TileEntity >> field_145855_i = Maps. < String, Class <? extends TileEntity >> newHashMap();
 @@ -59,6 +59,7 @@
      public void func_145839_a(NBTTagCompound p_145839_1_)
      {
@@ -201,13 +210,13 @@
 +        // NOOP
 +    }
 +
-+    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
++    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing) { return getCapability(capability, facing) != null; }
++    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) { return null; }
++    public void deserializeNBT(NBTTagCompound nbt){ this.func_145839_a(nbt); }
++    public NBTTagCompound serializeNBT()
 +    {
-+        return getCapability(capability, facing) != null;
-+    }
-+
-+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing)
-+    {
-+        return null;
++        NBTTagCompound ret = new NBTTagCompound();
++        this.func_145841_b(ret);
++        return ret;
 +    }
  }
