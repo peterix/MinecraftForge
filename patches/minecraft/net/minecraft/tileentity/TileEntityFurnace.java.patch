@@ -78,7 +78,7 @@
 +            if (facing == net.minecraft.util.EnumFacing.DOWN) return (T)BOTTOM;
 +            return (T)SIDES;
 +        }
-+        return null;
++        return super.getCapability(capability, facing);
 +    }
 +
  }
