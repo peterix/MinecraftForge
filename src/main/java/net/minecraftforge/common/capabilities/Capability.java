@@ -1,28 +1,29 @@
 package net.minecraftforge.common.capabilities;
 
+import java.util.concurrent.Callable;
+
 import com.google.common.base.Throwables;
 
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public class Capability<T>
 {
     public static interface IStorage<T>
     {
-        NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side, TileEntity te);
-        void readNBT(Capability<T> capability, T instance, EnumFacing side, TileEntity te, NBTBase nbt);
+        NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side);
+        void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt);
     }
 
     private final String name;
     private final IStorage<T> storage;
-    private final Class<? extends T> implementation;
+    private final Callable<? extends T> factory;
 
-    Capability(String name, IStorage<T> storage, Class<? extends T> implementation)
+    Capability(String name, IStorage<T> storage, Callable<? extends T> factory)
     {
         this.name = name;
         this.storage = storage;
-        this.implementation = implementation;
+        this.factory = factory;
     }
 
     public String getName() { return name; }
@@ -30,13 +31,14 @@ public class Capability<T>
 
     public T getDefaultInstance() //Do we need extra args? Side? World?
     {
-        try {
-            return (T)this.implementation.newInstance();
-        } catch (InstantiationException e) {
-            Throwables.propagate(e);
-        } catch (IllegalAccessException e) {
+        try
+        {
+            return this.factory.call();
+        }
+        catch (Exception e)
+        {
             Throwables.propagate(e);
         }
-        return null; // We'll never get here, but compile!
+        return null;
     }
 }

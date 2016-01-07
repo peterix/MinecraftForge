@@ -5,11 +5,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.Type;
 
 import com.google.common.base.Function;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -24,10 +26,29 @@ public enum CapabilityManager
     private IdentityHashMap<String, Capability<?>> providers = Maps.newIdentityHashMap();
     private IdentityHashMap<String, List<Function<Capability<?>, Object>>> callbacks = Maps.newIdentityHashMap();
 
-    public <T> Capability<T> register(Class<T> type, Capability.IStorage<T> storage, Class<? extends T> implementation)
+    public <T> Capability<T> register(Class<T> type, Capability.IStorage<T> storage, final Class<? extends T> implementation)
+    {
+        return register(type, storage, new Callable<T>()
+        {
+            @Override
+            public T call() throws Exception
+            {
+                try {
+                    return (T)implementation.newInstance();
+                } catch (InstantiationException e) {
+                    Throwables.propagate(e);
+                } catch (IllegalAccessException e) {
+                    Throwables.propagate(e);
+                }
+                return null;
+            }
+        });
+    }
+
+    public <T> Capability<T> register(Class<T> type, Capability.IStorage<T> storage, Callable<? extends T> factory)
     {
         String realName = type.getName().intern();
-        Capability<T> cap = new Capability<T>(realName, storage, implementation);
+        Capability<T> cap = new Capability<T>(realName, storage, factory);
         providers.put(realName, cap);
 
         List<Function<Capability<?>, Object>> list = callbacks.get(realName);

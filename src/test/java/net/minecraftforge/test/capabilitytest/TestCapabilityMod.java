@@ -70,12 +70,12 @@ public class TestCapabilityMod
     public static class Storage implements IStorage<IExampleCapability>
     {
         @Override
-        public NBTBase writeNBT(Capability<IExampleCapability> capability, IExampleCapability instance, EnumFacing side, TileEntity te) {
+        public NBTBase writeNBT(Capability<IExampleCapability> capability, IExampleCapability instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<IExampleCapability> capability, IExampleCapability instance, EnumFacing side, TileEntity te, NBTBase nbt) {
+        public void readNBT(Capability<IExampleCapability> capability, IExampleCapability instance, EnumFacing side, NBTBase nbt) {
         }
     }
 
@@ -90,7 +90,7 @@ public class TestCapabilityMod
     {
 
         @Override
-        public NBTBase writeNBT(Capability<IInventory> capability, IInventory instance, EnumFacing side, TileEntity te)
+        public NBTBase writeNBT(Capability<IInventory> capability, IInventory instance, EnumFacing side)
         {
             NBTTagList nbt = new NBTTagList();
 
@@ -109,7 +109,7 @@ public class TestCapabilityMod
         }
 
         @Override
-        public void readNBT(Capability<IInventory> capability, IInventory instance, EnumFacing side, TileEntity te, NBTBase nbt)
+        public void readNBT(Capability<IInventory> capability, IInventory instance, EnumFacing side, NBTBase nbt)
         {
             NBTTagList list = (NBTTagList)nbt; //.getTagList("Items", 10);
             for (int i = 0; i < list.tagCount(); ++i)
