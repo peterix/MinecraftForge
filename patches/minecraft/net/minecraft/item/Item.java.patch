@@ -708,7 +708,7 @@
 +     * @param nbt NBT of this item serialized, or null.
 +     * @return A holder instance associated with this ItemStack where you can hold capabilities for the life of this item.
 +     */
-+    public net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound> initCapabilities(ItemStack stack, NBTTagCompound nbt)
++    public net.minecraftforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 +    {
 +        return null;
 +    }

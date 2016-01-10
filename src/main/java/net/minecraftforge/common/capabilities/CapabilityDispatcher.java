@@ -18,12 +18,25 @@ public final class CapabilityDispatcher implements INBTSerializable<NBTTagCompou
     private INBTSerializable<NBTBase>[] writers;
     private String[] names;
 
+    public CapabilityDispatcher(Map<ResourceLocation, ICapabilityProvider> list) {
+        this(list, null);
+    }
     @SuppressWarnings("unchecked")
-    public CapabilityDispatcher(Map<ResourceLocation, ICapabilityProvider> list)
+    public CapabilityDispatcher(Map<ResourceLocation, ICapabilityProvider> list, ICapabilityProvider parent)
     {
         List<ICapabilityProvider> lstCaps = Lists.newArrayList();
         List<INBTSerializable<NBTBase>> lstWriters = Lists.newArrayList();
         List<String> lstNames = Lists.newArrayList();
+
+        if (parent != null) // Parents go first!
+        {
+            lstCaps.add(parent);
+            if (parent instanceof INBTSerializable)
+            {
+                lstWriters.add((INBTSerializable<NBTBase>)parent);
+                lstNames.add("Parent");
+            }
+        }
 
         for (Map.Entry<ResourceLocation, ICapabilityProvider> entry : list.entrySet())
         {

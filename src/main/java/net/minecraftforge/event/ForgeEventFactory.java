@@ -16,6 +16,7 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -35,6 +36,7 @@ import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent.OverlayType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.AttachCapabilitiesEvent;
@@ -481,9 +483,20 @@ public class ForgeEventFactory
 
     public static CapabilityDispatcher gatherCapabilities(TileEntity tileEntity)
     {
-        AttachCapabilitiesEvent event = new AttachCapabilitiesEvent(tileEntity);
+        return gatherCapabilities(new AttachCapabilitiesEvent.TileEntity(tileEntity), null);
+    }
+    public static CapabilityDispatcher gatherCapabilities(Entity entity)
+    {
+        return gatherCapabilities(new AttachCapabilitiesEvent.Entity(entity), null);
+    }
+    public static CapabilityDispatcher gatherCapabilities(Item item, ItemStack stack, ICapabilityProvider parent)
+    {
+        return gatherCapabilities(new AttachCapabilitiesEvent.Item(item, stack), parent);
+    }
+    private static CapabilityDispatcher gatherCapabilities(AttachCapabilitiesEvent event, ICapabilityProvider parent)
+    {
         MinecraftForge.EVENT_BUS.post(event);
-        return event.getCapabilities().size() > 0 ? new CapabilityDispatcher(event.getCapabilities()) : null;
+        return event.getCapabilities().size() > 0 ? new CapabilityDispatcher(event.getCapabilities(), parent) : null;
     }
 
 }
