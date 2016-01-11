@@ -7,6 +7,4 @@ import java.lang.annotation.*;
 public @interface CapabilityInject
 {
     Class<?> value();
-
-    String className() default "";
 }
